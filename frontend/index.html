@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentQuest Board — Agent ID-gated daily quests on BNB Chain</title>
+<style>
+  :root { --bg:#0b0e11; --card:#1a1d22; --line:#2a2e35; --text:#eaecef; --muted:#8a8f98;
+          --yellow:#f0b90b; --green:#2ebd85; --purple:#7c5cfc; --red:#f6465d; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:Arial,Helvetica,sans-serif;
+         max-width:860px; margin:0 auto; padding:24px 16px 64px; line-height:1.5; }
+  h1 { font-size:28px; margin-bottom:4px; }
+  h1 span { color:var(--yellow); }
+  .sub { color:var(--muted); margin-bottom:24px; }
+  .banner { background:#2a2305; border:1px solid #6b5a08; color:#f5d76e; border-radius:10px;
+            padding:12px 16px; margin-bottom:20px; display:none; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px; margin-bottom:16px; }
+  .row { display:flex; flex-wrap:wrap; gap:12px; }
+  .stat { flex:1 1 140px; background:#12151a; border:1px solid var(--line); border-radius:10px; padding:14px; }
+  .stat .label { font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  .stat .value { font-size:22px; font-weight:bold; margin-top:4px; word-break:break-all; }
+  .stat .value.small { font-size:15px; }
+  button { background:var(--yellow); color:#0b0e11; border:none; border-radius:8px; padding:12px 20px;
+           font-size:15px; font-weight:bold; cursor:pointer; }
+  button:disabled { background:#3a3f47; color:#8a8f98; cursor:not-allowed; }
+  button.secondary { background:transparent; border:1px solid var(--line); color:var(--text); }
+  .badges { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+  .badge { background:#12151a; border:1px solid var(--line); border-radius:12px; padding:16px; text-align:center; }
+  .badge img { width:160px; height:160px; border-radius:12px; }
+  .badge h3 { margin:10px 0 4px; font-size:16px; }
+  .badge p { color:var(--muted); font-size:13px; margin-bottom:12px; }
+  .badge .owned { color:var(--green); font-weight:bold; }
+  #status { margin-top:12px; font-size:14px; min-height:20px; }
+  #status.err { color:var(--red); }
+  #status.ok { color:var(--green); }
+  footer { color:var(--muted); font-size:13px; margin-top:24px; }
+  footer a { color:var(--yellow); }
+  code { background:#12151a; padding:2px 6px; border-radius:4px; font-size:13px; }
+</style>
+</head>
+<body>
+  <h1>AgentQuest <span>Board</span></h1>
+  <p class="sub">Daily check-ins and streak badges for Binance Agent ID holders — BNB Chain.
+     <br>Check-in harian &amp; lencana streak untuk pemegang Agent ID.</p>
+
+  <div class="banner" id="notDeployedBanner">
+    The AgentQuestBoard contract is not deployed yet — this is the v1 build preview.
+    Set <code>BOARD_ADDRESS</code> in <code>app.js</code> after deployment.
+  </div>
+
+  <div class="card">
+    <div class="row" style="align-items:center; justify-content:space-between;">
+      <div>
+        <div style="color:var(--muted); font-size:12px; text-transform:uppercase;">Wallet</div>
+        <div id="address" style="font-weight:bold;">Not connected / Belum terhubung</div>
+      </div>
+      <button id="connectBtn">Connect Wallet</button>
+    </div>
+    <div id="status"></div>
+  </div>
+
+  <div class="card" id="statsCard" style="display:none;">
+    <div class="row">
+      <div class="stat"><div class="label">Agent ID</div><div class="value small" id="statAgentId">—</div></div>
+      <div class="stat"><div class="label">Current streak</div><div class="value" id="statStreak">—</div></div>
+      <div class="stat"><div class="label">Best streak</div><div class="value" id="statBest">—</div></div>
+      <div class="stat"><div class="label">Total check-ins</div><div class="value" id="statTotal">—</div></div>
+      <div class="stat"><div class="label">Today / Hari ini</div><div class="value small" id="statToday">—</div></div>
+    </div>
+    <div style="margin-top:16px;">
+      <button id="checkInBtn" disabled>Check in today</button>
+      <span style="color:var(--muted); font-size:13px; margin-left:8px;">Free — gas only. Requires your wallet confirmation.</span>
+    </div>
+  </div>
+
+  <div class="card" id="badgesCard" style="display:none;">
+    <h2 style="font-size:18px; margin-bottom:12px;">Badges</h2>
+    <div class="badges" id="badges"></div>
+  </div>
+
+  <footer>
+    <p>AgentQuest Board is a hackathon project for the Binance Agent ID Hackathon.
+       Contract: <code id="contractAddr">not deployed yet</code> (BNB Chain, chain 56).</p>
+    <p>How it works: connect with an injected wallet (MetaMask / Binance Wallet extension) —
+       no QR login, no WalletConnect. Every action is a transaction you confirm yourself.
+       All quests are free; only network gas applies. The contract holds no funds.</p>
+    <p>Badges are ERC-1155 tokens with fully on-chain SVG metadata. Max 1 of each badge per wallet.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.0/dist/ethers.umd.min.js"></script>
+  <script src="abi.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
